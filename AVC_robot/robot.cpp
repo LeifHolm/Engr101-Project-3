@@ -56,20 +56,21 @@ double AnalyseImage(pixel_array) {
 *Given input degrees, adjust motor speeds.
 */
 void AdjustRobot(double adjustmentdegrees) {
-  // theta = adjustmentdegrees
-  // y = sin theta 
-  // x = cos theta
-  // Setspeed(x,y)
+  theta = adjustmentdegrees;
+  if (theta <= 180) {
+	  set_Motors(1, 0);
+  } 
+  else {
+	  set_Motors(0,1);
+  }
 }
 
 /**
 *Do "step", drive at current motor speeds
 */
 void DriveRobot() {
-  // theta = current_direction
-  // y = sin theta 
-  // x = cos theta
-  // Setspeed(x,y)
+  set_Motors(1, 1);
+  
 }
 
 /**
