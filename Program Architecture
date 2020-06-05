@@ -63,7 +63,7 @@ void DriveRobot() {
   # theta = current_direction
   # y = sin theta 
   # x = cos theta
-  # Setspeed(width,height)
+  # Setspeed(x,y)
 }
 
 /**
@@ -77,8 +77,7 @@ int main() {
   # pixel_array = TakePicture();
   # adjustment_degrees = AnalyseImage(pixel_array);
   # AdjustRobot(adjustment_degrees)
-  # Conditionals, if(HasFinish())
-  # Else Step
+  # Conditionals, if(HasFinish()) etc
   # End loop
  }
 
