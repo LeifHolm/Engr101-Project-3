@@ -57,12 +57,7 @@ double AnalyseImage(pixel_array) {
 */
 void AdjustRobot(double adjustmentdegrees) {
   theta = adjustmentdegrees;
-  if (theta <= 180) {
-	  set_Motors(1, 0);
-  } 
-  else {
-	  set_Motors(0,1);
-  }
+  setMotors(theta, -theta);
 }
 
 /**
