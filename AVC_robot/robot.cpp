@@ -114,6 +114,8 @@ void AdjustRobot(double adjustmentdegrees) {
   // y = sin theta 
   // x = cos theta
   // Setspeed(x,y)
+  theta = adjustmentdegrees;
+  setMotors(theta, -theta);
 }
 
 /**
