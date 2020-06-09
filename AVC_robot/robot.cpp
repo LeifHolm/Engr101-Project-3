@@ -12,33 +12,86 @@ using namespace std;
 /**
 * Check if white line exists in given image, return 0 (bad) 1 (good)
 */
-int HasWhiteLine(pixel_array) {
-  // for pixels in pixel_array, find white continuous row
-  // if continuous row, 1, else 0
+int HasWhiteLine() {
+	int totalWhite = 0;
+
+	for(int row =0 ; row < cameraView.height ; row++){	
+		for(int column = 0; column < cameraView.width ; column++){
+			int red = (int)get_pixel(cameraView, row, column, 0);
+			int green = (int)get_pixel(cameraView, row, column, 1);
+			int blue = (int)get_pixel(cameraView, row, column, 2);
+			
+			//WHITE DETECTION
+			//All rgb values greater than 240 indicate a white pixel
+			if(red > 240 && green > 240 && blue > 240){
+				totalWhite += 1;
+			}
+		}
+	}
+	//LINE DETECTION
+	//If at least 3x height of frame in white pixels, indicates there is a white line
+	if(totalWhite >= 3*cameraView.height){
+		return 1;
+	}
+	else{
+	    return 0;
+	}
+}
+
+/**
+* Check if red line exists in given image, return 0 (bad) 1 (good)
+*/
+int HasRedLine() {
+	int totalRed = 0;
+
+	for(int row =0 ; row < cameraView.height ; row++){	
+		for(int column = 0; column < cameraView.width ; column++){
+			int red = (int)get_pixel(cameraView, row, column, 0);
+			int green = (int)get_pixel(cameraView, row, column, 1);
+			int blue = (int)get_pixel(cameraView, row, column, 2);
+			
+			//RED DETECTION
+			//Red twice as large as both green and blue indicates a red pixel
+			if(red > 2 * blue and red > 2 * green){
+				totalRed += 1;
+			}
+		}
+	}
+	//LINE DETECTION
+	//If at least 3x height of frame in red pixels, indicates there is a red line
+	if(totalRed >= 3*cameraView.height){
+		return 1;
+	}
+	else{
+	    return 0;
+	}
 }
 
 /**
 * Check if checker black flag exists in given image
 */
-int HasFinish(pixel_array) {
+int HasFinish() {
   // for pixels in pixel_array, find red/white continuous row
   // if continuous row, 1, else 0
+  return 0;
 }
 
 /**
 * Returns pixel distance from center of given image to nearest white line, as xy
 */
-int[] GetWhiteTarget(pixel_array) {
+int* GetWhiteTarget() {
   // for pixels in pixel_array, find center pixel of each row of white
   // find center of center of white, get degrees to change by
+  return 0;
 }
 
 /**
 * Returns pixel distance from center of given image to nearest red line
 */
-int GetRedTarget(pixel_array) {
+int GetRedTarget() {
   // for pixels in pixel_array, find first center pixel of each row of red (to find leftmost)
   // find center of center of red, get degrees to change by (with offset)
+  return 0;
 }
 
 /**
@@ -46,16 +99,21 @@ int GetRedTarget(pixel_array) {
 *Else GetRedTarget, and calculate degree adjustment to center robot offset to left red line
 *Return direction to adjust by in degrees
 * */
-double AnalyseImage(pixel_array) {
+double AnalyseImage() {
   // If HasWhiteLine, theta = GetWhiteTarget
   // Else theta = GetRedTarget
   // return theta
+  return 0;
 }
 
 /**
 *Given input degrees, adjust motor speeds.
 */
 void AdjustRobot(double adjustmentdegrees) {
+  // theta = adjustmentdegrees
+  // y = sin theta 
+  // x = cos theta
+  // Setspeed(x,y)
   theta = adjustmentdegrees;
   setMotors(theta, -theta);
 }
@@ -64,8 +122,10 @@ void AdjustRobot(double adjustmentdegrees) {
 *Do "step", drive at current motor speeds
 */
 void DriveRobot() {
-  set_Motors(1, 1);
-  
+  // theta = current_direction
+  // y = sin theta 
+  // x = cos theta
+  // Setspeed(x,y)
 }
 
 /**
