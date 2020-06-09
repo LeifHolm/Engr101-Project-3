@@ -103,7 +103,12 @@ double AnalyseImage() {
   // If HasWhiteLine, theta = GetWhiteTarget
   // Else theta = GetRedTarget
   // return theta
-  return 0;
+  ///Target detection logic here
+  if(HasWhiteLine()) {
+	  return GetWhiteTargetAngle();
+  } else {
+	  return GetRedTargetAngle();
+  }
 }
 
 /**
@@ -111,11 +116,9 @@ double AnalyseImage() {
 */
 void AdjustRobot(double adjustmentdegrees) {
   // theta = adjustmentdegrees
-  // y = sin theta 
-  // x = cos theta
   // Setspeed(x,y)
-  theta = adjustmentdegrees;
-  setMotors(theta, -theta);
+  //theta = adjustmentdegrees;
+  setMotors(adjustmentdegrees, -adjustmentdegrees);
 }
 
 /**
