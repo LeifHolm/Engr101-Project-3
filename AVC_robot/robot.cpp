@@ -1,5 +1,6 @@
 //Headers
 #include "robot.hpp"
+#include <windows.h>
 
 //Namespace
 using namespace std;
@@ -79,7 +80,7 @@ int HasFinish() {
 /**
 * Returns pixel distance from center of given image to nearest white line, as xy
 */
-int* GetWhiteTarget() {
+double GetWhiteTarget() {
   // for pixels in pixel_array, find center pixel of each row of white
   // find center of center of white, get degrees to change by
   return 0;
@@ -88,7 +89,7 @@ int* GetWhiteTarget() {
 /**
 * Returns pixel distance from center of given image to nearest red line
 */
-int GetRedTarget() {
+double GetRedTarget() {
   // for pixels in pixel_array, find first center pixel of each row of red (to find leftmost)
   // find center of center of red, get degrees to change by (with offset)
   return 0;
@@ -105,9 +106,9 @@ double AnalyseImage() {
   // return theta
   ///Target detection logic here
   if(HasWhiteLine()) {
-	  return GetWhiteTargetAngle();
+	  return GetWhiteTarget();
   } else {
-	  return GetRedTargetAngle();
+	  return GetRedTarget();
   }
 }
 
@@ -150,14 +151,21 @@ int main(){
 	if (initClientRobot() !=0){
 		std::cout<<" Error initializing robot"<<std::endl;
 	}
-    double vLeft = 40.0;
-    double vRight = 30.0;
-    takePicture();
-    SavePPMFile("i0.ppm",cameraView);
-    while(1){
-      setMotors(vLeft,vRight);   
-      std::cout<<" vLeft="<<vLeft<<"  vRight="<<vRight<<std::endl;
-       usleep(10000);
-  } //while
+	double adjustment_degrees = 0;
+	bool running = 1;
+	double vLeft = 40.0;
+	double vRight = 30.0;
+	while(running = 1){
+		takePicture();
+		SavePPMFile("i0.ppm",cameraView);
+		adjustment_degrees = AnalyseImage();
+		AdjustRobot(adjustment_degrees);
+		DriveRobot();
+		std::cout<<" vLeft="<<vLeft<<"  vRight="<<vRight<<std::endl;
+		sleep(10000);
+		if (HasFinish() == 1) {
+			running = 0;
+		}
+	}
 
-} // main
+}
