@@ -1,5 +1,6 @@
 //Headers
 #include "robot.hpp"
+#include <math.h>
 #include <windows.h>
 
 //Namespace
@@ -78,7 +79,7 @@ int HasFinish() {
 /**
 * Returns coordinates on white line that robot is aiming for
 */
-int* GetWhiteTarget() {
+double GetWhiteTarget() {
     int targetCoordinates[2] = {-1, -1};
 	
 	int xTarget1 = -1;
@@ -109,14 +110,23 @@ int* GetWhiteTarget() {
 			}
 		}
 	}
-	return targetCoordinates;
+	
+	int xRobot = cameraView.width / 2;
+	int yRobot = cameraView.height -1;
+	int xTarget = targetCoordinates[0];
+	int yTarget = targetCoordinates[1];
+	int distX = xTarget - xRobot;
+	int distY = yRobot - yTarget;
+	double theta = atan(distX / distY);
+	
+	return theta;
 }
 
 /**
 * Returns coordinates on red wall that robot is aiming for
 * The coordinates are offset so that the robot moves alongside the wall, not on it
 */
-int* GetRedTarget() {
+double GetRedTarget() {
     int targetCoordinates[2] = {-1, -1};
 	
 	int xTarget1 = -1;
@@ -149,7 +159,16 @@ int* GetRedTarget() {
 	}
 	targetCoordinates[0] += 20; //Offset
 	targetCoordinates[1] += 20; //Offset
-	return targetCoordinates;
+	
+	int xRobot = cameraView.width / 2;
+	int yRobot = cameraView.height -1;
+	int xTarget = targetCoordinates[0];
+	int yTarget = targetCoordinates[1];
+	int distX = xTarget - xRobot;
+	int distY = yRobot - yTarget;
+	double theta = atan(distX / distY);
+	
+	return theta;
 }
 
 /**
@@ -159,30 +178,14 @@ int* GetRedTarget() {
 * */
 double AnalyseImage() {
 	if(HasWhiteLine() == 1){
-		int* coordinates = GetWhiteTarget();
-		int xRobot = cameraView.width / 2;
-		int yRobot = cameraView.height -1;
-		int xTarget = coordinates[0];
-		int yTarget = coordinates[1];
-		int distX = xTarget - xRobot;
-		int distY = yRobot - yTarget;
-		double theta = (Math.tan/1)(distX / distY);
-		return theta;
+		return GetWhiteTarget();
 	}
 	else if(HasRedLine() == 1){
-		int* coordinates = GetRedTarget();
-		int xRobot = cameraView.width / 2;
-		int yRobot = cameraView.height -1;
-		int xTarget = coordinates[0];
-		int yTarget = coordinates[1];
-		int distX = xTarget - xRobot;
-		int distY = yRobot - yTarget;
-		double theta = (Math.tan/1)(distX / distY);
-		return theta;
+		return GetRedTarget();
 	}
 	else{
 	    return 0;
-  }
+    }
 }
 
 /**
@@ -202,7 +205,7 @@ void DriveRobot() {
   // theta = current_direction
   // y = sin theta 
   // x = cos theta
-  // Setspeed(x,y)
+  Setspeed(180,180)
 }
 
 /**
