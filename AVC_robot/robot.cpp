@@ -1,5 +1,6 @@
 //Headers
 #include "robot.hpp"
+#include <math.h>
 #include <windows.h>
 
 //Namespace
@@ -116,7 +117,7 @@ double GetWhiteTarget() {
 	int yTarget = targetCoordinates[1];
 	int distX = xTarget - xRobot;
 	int distY = yRobot - yTarget;
-	double theta = (1/tan)(distX / distY);
+	double theta = atan(distX / distY);
 	
 	return theta;
 }
@@ -165,7 +166,7 @@ double GetRedTarget() {
 	int yTarget = targetCoordinates[1];
 	int distX = xTarget - xRobot;
 	int distY = yRobot - yTarget;
-	double theta = (1/tan)(distX / distY);
+	double theta = atan(distX / distY);
 	
 	return theta;
 }
