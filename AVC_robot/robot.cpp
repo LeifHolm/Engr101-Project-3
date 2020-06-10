@@ -1,5 +1,6 @@
 //Headers
 #include "robot.hpp"
+#include <math.h>
 #include <windows.h>
 
 //Namespace
@@ -72,27 +73,102 @@ int HasRedLine() {
 * Check if checker black flag exists in given image
 */
 int HasFinish() {
-  // for pixels in pixel_array, find red/white continuous row
-  // if continuous row, 1, else 0
-  return 0;
+	return 0;
 }
 
 /**
-* Returns pixel distance from center of given image to nearest white line, as xy
+* Returns coordinates on white line that robot is aiming for
 */
 double GetWhiteTarget() {
-  // for pixels in pixel_array, find center pixel of each row of white
-  // find center of center of white, get degrees to change by
-  return 0;
+    int targetCoordinates[2] = {-1, -1};
+	
+	int xTarget1 = -1;
+	int yTarget1 = -1;
+	int xTarget2 = -1;	
+	int yTarget2 = -1;
+	
+	for(int row =0 ; row < cameraView.height; row++){
+		for(int column = 0; column < cameraView.width ; column++){
+			int r = (int)get_pixel(cameraView, row, column, 0);
+			int g = (int)get_pixel(cameraView, row, column, 1);
+			int b = (int)get_pixel(cameraView, row, column, 2);
+			
+			//FINDING TARGET POSITION
+			if(targetCoordinates[0] == -1 && targetCoordinates[1] == -1){
+				//WHITE DETECTION
+				//All rgb values greater than 240 indicate a white pixel
+				if(r > 240 && g > 240 && b > 240){
+					if(xTarget1 == -1 && yTarget1){
+						xTarget1 = column;
+						yTarget1 = row;
+					}
+					xTarget2 = column;
+					yTarget2 = row;
+				}
+				targetCoordinates[0] =  (xTarget2 - xTarget1) / 2;
+				targetCoordinates[1] =  (yTarget2 - yTarget1) / 2;
+			}
+		}
+	}
+	
+	int xRobot = cameraView.width / 2;
+	int yRobot = cameraView.height -1;
+	int xTarget = targetCoordinates[0];
+	int yTarget = targetCoordinates[1];
+	int distX = xTarget - xRobot;
+	int distY = yRobot - yTarget;
+	double theta = atan(distX / distY);
+	
+	return theta;
 }
 
 /**
-* Returns pixel distance from center of given image to nearest red line
+* Returns coordinates on red wall that robot is aiming for
+* The coordinates are offset so that the robot moves alongside the wall, not on it
 */
 double GetRedTarget() {
-  // for pixels in pixel_array, find first center pixel of each row of red (to find leftmost)
-  // find center of center of red, get degrees to change by (with offset)
-  return 0;
+    int targetCoordinates[2] = {-1, -1};
+	
+	int xTarget1 = -1;
+	int yTarget1 = -1;
+	int xTarget2 = -1;	
+	int yTarget2 = -1;
+	
+	for(int row =0 ; row < cameraView.height; row++){
+		for(int column = 0; column < cameraView.width ; column++){
+			int r = (int)get_pixel(cameraView, row, column, 0);
+			int g = (int)get_pixel(cameraView, row, column, 1);
+			int b = (int)get_pixel(cameraView, row, column, 2);
+			
+			//FINDING TARGET POSITION
+			if(targetCoordinates[0] == -1 && targetCoordinates[1] == -1){
+				//RED DETECTION
+				//Red twice as large as both green and blue indicates a red pixel
+				if(r > 2 * b && r > 2 * g){
+					if(xTarget1 == -1 && yTarget1){
+						xTarget1 = column;
+						yTarget1 = row;
+					}
+					xTarget2 = column;
+					yTarget2 = row;
+				}
+				targetCoordinates[0] =  (xTarget2 - xTarget1) / 2;
+				targetCoordinates[1] =  (yTarget2 - yTarget1) / 2;
+			}
+		}
+	}
+	targetCoordinates[0] += 20; //Offset
+	targetCoordinates[1] += 20; //Offset
+	
+	int xRobot = cameraView.width / 2;
+	int yRobot = cameraView.height -1;
+	int xTarget = targetCoordinates[0];
+	int yTarget = targetCoordinates[1];
+	int distX = xTarget - xRobot;
+	int distY = yRobot - yTarget;
+	double theta = atan(distX / distY);
+	
+	return theta;
 }
 
 /**
@@ -101,15 +177,15 @@ double GetRedTarget() {
 *Return direction to adjust by in degrees
 * */
 double AnalyseImage() {
-  // If HasWhiteLine, theta = GetWhiteTarget
-  // Else theta = GetRedTarget
-  // return theta
-  ///Target detection logic here
-  if(HasWhiteLine()) {
-	  return GetWhiteTarget();
-  } else {
-	  return GetRedTarget();
-  }
+	if(HasWhiteLine() == 1){
+		return GetWhiteTarget();
+	}
+	else if(HasRedLine() == 1){
+		return GetRedTarget();
+	}
+	else{
+	    return 0;
+    }
 }
 
 /**
