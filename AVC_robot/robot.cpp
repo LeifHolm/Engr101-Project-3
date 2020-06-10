@@ -1,5 +1,6 @@
 //Headers
 #include "robot.hpp"
+#include <windows.h>
 
 //Namespace
 using namespace std;
@@ -181,7 +182,7 @@ double AnalyseImage() {
 	}
 	else{
 	    return 0;
-    }
+  }
 }
 
 /**
@@ -189,11 +190,9 @@ double AnalyseImage() {
 */
 void AdjustRobot(double adjustmentdegrees) {
   // theta = adjustmentdegrees
-  // y = sin theta 
-  // x = cos theta
   // Setspeed(x,y)
-  theta = adjustmentdegrees;
-  setMotors(theta, -theta);
+  //theta = adjustmentdegrees;
+  setMotors(adjustmentdegrees, -adjustmentdegrees);
 }
 
 /**
@@ -225,14 +224,20 @@ int main(){
 	if (initClientRobot() !=0){
 		std::cout<<" Error initializing robot"<<std::endl;
 	}
-    double vLeft = 40.0;
-    double vRight = 30.0;
-    takePicture();
-    SavePPMFile("i0.ppm",cameraView);
-    while(1){
-      setMotors(vLeft,vRight);   
-      std::cout<<" vLeft="<<vLeft<<"  vRight="<<vRight<<std::endl;
-       usleep(10000);
-  } //while
-
-} // main
+	double adjustment_degrees = 0;
+	bool running = 1;
+	double vLeft = 40.0;
+	double vRight = 30.0;
+	while(running = 1){
+		takePicture();
+		SavePPMFile("i0.ppm",cameraView);
+		adjustment_degrees = AnalyseImage();
+		AdjustRobot(adjustment_degrees);
+		DriveRobot();
+		std::cout<<" vLeft="<<vLeft<<"  vRight="<<vRight<<std::endl;
+		sleep(10000);
+		if (HasFinish() == 1) {
+			running = 0;
+		}
+	}
+}
