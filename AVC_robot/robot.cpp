@@ -84,11 +84,15 @@ double GetWhiteTarget() {
 			//WHITE DETECTION
 			//All rgb values greater than 240 indicate a white pixel
 			if(r > 250 && g > 250 && b > 250){
-				double xRobot = cameraView.width / 2;
-				double yRobot = cameraView.height -1;
-				double xTarget = column;
-				double yTarget = row;
-				return atan(xTarget - xRobot / yRobot - yTarget) * 180 / M_PI;
+				int xRobot = cameraView.width / 2;
+				int yRobot = cameraView.height -1;
+				int xTarget = column;
+				int yTarget = row;
+				double distX = xTarget - xRobot;
+				double distY = yRobot - yTarget;
+				double theta = atan(distX / distY) * 180 / M_PI;
+				
+				return theta;
 			}
 		}
 	}
@@ -108,11 +112,15 @@ double GetRedTarget() {
 			//RED DETECTION
 			//Red twice as large as both green and blue indicates a red pixel
 			if(r > 2 * b && r > 2 * g){
-				double xRobot = cameraView.width / 2;
-				double yRobot = cameraView.height -1;
-				double xTarget = column + 20; //20px offset
-				double yTarget = row + 20; //20px offset
-				return atan(xTarget - xRobot / yRobot - yTarget) * 180 / M_PI;
+				int xRobot = cameraView.width / 2;
+				int yRobot = cameraView.height -1;
+				int xTarget = column + 20; //20px offset from wall
+				int yTarget = row + 20; //20px offset from wall
+				double distX = xTarget - xRobot;
+				double distY = yRobot - yTarget;
+				double theta = atan(distX / distY) * 180 / M_PI;
+				
+				return theta;
 			}
 		}
 	}
