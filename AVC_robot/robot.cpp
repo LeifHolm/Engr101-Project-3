@@ -1,10 +1,8 @@
 //Headers
 #include "robot.hpp"
 #include <math.h>
-#include <iostream>
 
 using namespace std;
-
 
 /**
 * Check if white line exists in camera view, return 1 (true) or 0 (false)
@@ -82,7 +80,7 @@ double GetWhiteTarget() {
 			int b = (int)get_pixel(cameraView, row, column, 2);
 			
 			//WHITE DETECTION
-			//All rgb values greater than 240 indicate a white pixel
+			//All rgb values greater than 250 indicate a white pixel
 			if(r > 250 && g > 250 && b > 250){
 				int xRobot = cameraView.width / 2;
 				int yRobot = cameraView.height -1;
@@ -155,7 +153,7 @@ void AdjustRobot(double adjustmentdegrees) {
 *Do "step", drive at current motor speeds
 */
 void DriveRobot() {
-  setMotors(50,50);
+  setMotors(100,100);
 }
 
 /**
@@ -167,24 +165,22 @@ void DriveRobot() {
 */
 
 int main(){
-	if (initClientRobot() !=0){
-		std::cout<<" Error initializing robot"<<std::endl;
+	if(initClientRobot() !=0){
+		cout<<" Error initializing robot"<<endl;
 	}
-	double adjustment_degrees = 0;
+	
 	bool running = 1;
-	double vLeft = 40.0;
-	double vRight = 30.0;
 	while(running == 1){
 		takePicture();
 		SavePPMFile("i0.ppm",cameraView);
-		adjustment_degrees = AnalyseImage();
-		AdjustRobot(adjustment_degrees);
+		double adjustmentDegrees = AnalyseImage();
+		AdjustRobot(adjustmentDegrees);
 		sleep(1);
 		DriveRobot();
-		std::cout<<" vLeft="<<vLeft<<"  vRight="<<vRight<<std::endl;
 		sleep(1);
-		if (HasFinish() == 1) {
+		if(HasFinish() == 1) {
 			running = 0;
 		}
 	}
+	cout<<"Robot has completed the maze!"<<endl;
 }
