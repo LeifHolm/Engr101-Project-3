@@ -1,16 +1,9 @@
 //Headers
 #include "robot.hpp"
 #include <math.h>
-#include <cmath>
 #include <iostream>
-//#include <windows.h>
 
-//Namespace
 using namespace std;
-
-//Function Declarations
-
-//Field Declarations
 
 
 /**
@@ -27,7 +20,7 @@ int HasWhiteLine() {
 			
 			//WHITE DETECTION
 			//All rgb values greater than 240 indicate a white pixel
-			if(red > 240 && green > 240 && blue > 240){
+			if(red > 250 && green > 250 && blue > 250){
 				totalWhite += 1;
 			}
 		}
@@ -38,7 +31,7 @@ int HasWhiteLine() {
 		return 1;
 	}
 	else{
-	    return 0;
+	    return 1;
 	}
 }
 
@@ -82,8 +75,6 @@ int HasFinish() {
 * Returns coordinates on white line that robot is aiming for
 */
 double GetWhiteTarget() {
-    bool white = false;
-    
 	for(int row =0 ; row < cameraView.height; row++){
 		for(int column = 0; column < cameraView.width; column++){
 			int r = (int)get_pixel(cameraView, row, column, 0);
@@ -92,30 +83,15 @@ double GetWhiteTarget() {
 			
 			//WHITE DETECTION
 			//All rgb values greater than 240 indicate a white pixel
-			if(r > 240 && g > 240 && b > 240){
-				white = true;
-				
+			if(r > 250 && g > 250 && b > 250){
 				int xRobot = cameraView.width / 2;
 				int yRobot = cameraView.height -1;
-				int xTarget = row;
-				int yTarget = column;
-				int distX = xTarget - xRobot;
-				int distY = yRobot - yTarget;
-				double theta = atan(distX / distY) * (180 / M_PI) / 2;
-				
-				cout<<"White? "<<white<<endl;
-				cout<<"Robot x: "<<xRobot<<endl;
-				cout<<"Robot y: "<<yRobot<<endl;
-				cout<<"White x: "<<xTarget<<endl;
-				cout<<"White y: "<<yTarget<<endl;
-				cout<<"Distance x: "<<distX<<endl;
-				cout<<"Distance y: "<<distY<<endl;
-				cout<<"Theta: "<<theta<<endl;
-				
-				return theta;
+				int xTarget = column;
+				int yTarget = row;
+				return atan(xTarget - xRobot / yRobot - yTarget) * 180 / M_PI;
 			}
 		}
-  }
+	}
 }
 
 /**
@@ -189,9 +165,6 @@ double AnalyseImage() {
 *Given input degrees, adjust motor speeds.
 */
 void AdjustRobot(double adjustmentdegrees) {
-  // theta = adjustmentdegrees
-  // Setspeed(x,y)
-  //theta = adjustmentdegrees;
   setMotors(adjustmentdegrees, adjustmentdegrees * -1);
 }
 
@@ -199,9 +172,6 @@ void AdjustRobot(double adjustmentdegrees) {
 *Do "step", drive at current motor speeds
 */
 void DriveRobot() {
-  // theta = current_direction
-  // y = sin theta 
-  // x = cos theta
   setMotors(50,50);
 }
 
@@ -212,13 +182,6 @@ void DriveRobot() {
 *>Conditionals, if colliding, win lose
 *>DriveRobot()
 */
-//int main() {
-  // pixel_array = TakePicture();
-  // adjustment_degrees = AnalyseImage(pixel_array);
-  // AdjustRobot(adjustment_degrees)
-  // Conditionals, if(HasFinish()) etc
-  // End loop
-//}
 
 int main(){
 	if (initClientRobot() !=0){
