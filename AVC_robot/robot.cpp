@@ -205,7 +205,7 @@ void DriveRobot() {
   // theta = current_direction
   // y = sin theta 
   // x = cos theta
-  Setspeed(180,180)
+  setMotors(180,180)
 }
 
 /**
