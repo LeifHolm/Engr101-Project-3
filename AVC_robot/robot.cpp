@@ -7,7 +7,7 @@ using namespace std;
 
 
 /**
-* Check if white line exists in given image, return 0 (bad) 1 (good)
+* Check if white line exists in camera view, return 1 (true) or 0 (false)
 */
 int HasWhiteLine() {
 	int totalWhite = 0;
@@ -19,7 +19,7 @@ int HasWhiteLine() {
 			int blue = (int)get_pixel(cameraView, row, column, 2);
 			
 			//WHITE DETECTION
-			//All rgb values greater than 240 indicate a white pixel
+			//All rgb values greater than 250 indicate a white pixel
 			if(red > 250 && green > 250 && blue > 250){
 				totalWhite += 1;
 			}
@@ -84,10 +84,10 @@ double GetWhiteTarget() {
 			//WHITE DETECTION
 			//All rgb values greater than 240 indicate a white pixel
 			if(r > 250 && g > 250 && b > 250){
-				int xRobot = cameraView.width / 2;
-				int yRobot = cameraView.height -1;
-				int xTarget = column;
-				int yTarget = row;
+				double xRobot = cameraView.width / 2;
+				double yRobot = cameraView.height -1;
+				double xTarget = column;
+				double yTarget = row;
 				return atan(xTarget - xRobot / yRobot - yTarget) * 180 / M_PI;
 			}
 		}
@@ -99,48 +99,23 @@ double GetWhiteTarget() {
 * The coordinates are offset so that the robot moves alongside the wall, not on it
 */
 double GetRedTarget() {
-    int targetCoordinates[2] = {-1, -1};
-	
-	int xTarget1 = -1;
-	int yTarget1 = -1;
-	int xTarget2 = -1;	
-	int yTarget2 = -1;
-	
 	for(int row =0 ; row < cameraView.height; row++){
 		for(int column = 0; column < cameraView.width ; column++){
 			int r = (int)get_pixel(cameraView, row, column, 0);
 			int g = (int)get_pixel(cameraView, row, column, 1);
 			int b = (int)get_pixel(cameraView, row, column, 2);
 			
-			//FINDING TARGET POSITION
-			if(targetCoordinates[0] == -1 && targetCoordinates[1] == -1){
-				//RED DETECTION
-				//Red twice as large as both green and blue indicates a red pixel
-				if(r > 2 * b && r > 2 * g){
-					if(xTarget1 == -1 && yTarget1){
-						xTarget1 = column;
-						yTarget1 = row;
-					}
-					xTarget2 = column;
-					yTarget2 = row;
-				}
-				targetCoordinates[0] =  (xTarget2 - xTarget1) / 2;
-				targetCoordinates[1] =  (yTarget2 - yTarget1) / 2;
+			//RED DETECTION
+			//Red twice as large as both green and blue indicates a red pixel
+			if(r > 2 * b && r > 2 * g){
+				double xRobot = cameraView.width / 2;
+				double yRobot = cameraView.height -1;
+				double xTarget = column + 20; //20px offset
+				double yTarget = row + 20; //20px offset
+				return atan(xTarget - xRobot / yRobot - yTarget) * 180 / M_PI;
 			}
 		}
 	}
-	targetCoordinates[0] += 20; //Offset
-	targetCoordinates[1] += 20; //Offset
-	
-	int xRobot = cameraView.width / 2;
-	int yRobot = cameraView.height -1;
-	int xTarget = targetCoordinates[0];
-	int yTarget = targetCoordinates[1];
-	int distX = xTarget - xRobot;
-	int distY = yRobot - yTarget;
-	double theta = atan(distX / distY);
-	
-	return theta;
 }
 
 /**
