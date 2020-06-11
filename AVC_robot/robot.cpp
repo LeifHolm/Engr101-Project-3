@@ -115,7 +115,7 @@ double GetWhiteTarget() {
 				return theta;
 			}
 		}
-	}
+  }
 }
 
 /**
