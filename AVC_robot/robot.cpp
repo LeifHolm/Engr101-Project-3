@@ -205,7 +205,7 @@ void DriveRobot() {
   // theta = current_direction
   // y = sin theta 
   // x = cos theta
-  Setspeed(180,180)
+  setMotors(180,180)
 }
 
 /**
@@ -231,7 +231,7 @@ int main(){
 	bool running = 1;
 	double vLeft = 40.0;
 	double vRight = 30.0;
-	while(running = 1){
+	while(running == 1){
 		takePicture();
 		SavePPMFile("i0.ppm",cameraView);
 		adjustment_degrees = AnalyseImage();
