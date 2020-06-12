@@ -31,7 +31,7 @@ int HasWhiteLine() {
 		return 1;
 	}
 	else{
-	    return 1;
+	    return 0;
 	}
 }
 
@@ -157,7 +157,7 @@ void AdjustRobot(double adjustmentdegrees) {
 *Do "step", drive at current motor speeds
 */
 void DriveRobot() {
-  setMotors(100,100);
+  setMotors(40,40);
 }
 
 /**
@@ -179,11 +179,9 @@ int main(){
 		SavePPMFile("i0.ppm",cameraView);
 		double adjustmentDegrees = AnalyseImage();
 		AdjustRobot(adjustmentDegrees);
-		sleep(1);
 		if(doDrive) {
 			DriveRobot();
 		}
-		sleep(1);
 		if(HasFinish() == 1) {
 			running = 0;
 		}
