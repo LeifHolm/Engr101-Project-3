@@ -29,7 +29,7 @@ int HasWhiteLine() {
 		return 1;
 	}
 	else{
-	    return 1;
+	    return 0;
 	}
 }
 
@@ -133,11 +133,11 @@ double AnalyseImage() {
 	if(HasWhiteLine() == 1){
 		return GetWhiteTarget();
 	}
-	else if(HasRedLine() == 1){
-		return GetRedTarget();
-	}
+	//else if(HasRedLine() == 1){
+		//return GetRedTarget();
+	//}
 	else{
-		setMotors(10,-10);
+	    setMotors(168.75, -168.75);
 	    return 0;
     }
 }
@@ -153,7 +153,7 @@ void AdjustRobot(double adjustmentdegrees) {
 *Do "step", drive at current motor speeds
 */
 void DriveRobot() {
-  setMotors(100,100);
+  setMotors(40,40);
 }
 
 /**
@@ -175,9 +175,7 @@ int main(){
 		SavePPMFile("i0.ppm",cameraView);
 		double adjustmentDegrees = AnalyseImage();
 		AdjustRobot(adjustmentDegrees);
-		sleep(1);
 		DriveRobot();
-		sleep(1);
 		if(HasFinish() == 1) {
 			running = 0;
 		}
