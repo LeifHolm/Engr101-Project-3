@@ -4,6 +4,8 @@
 
 using namespace std;
 
+bool doDrive = true;
+
 /**
 * Check if white line exists in camera view, return 1 (true) or 0 (false)
 */
@@ -131,14 +133,16 @@ double GetRedTarget() {
 * */
 double AnalyseImage() {
 	if(HasWhiteLine() == 1){
+		doDrive = true;
 		return GetWhiteTarget();
 	}
-	//else if(HasRedLine() == 1){
-		//return GetRedTarget();
-	//}
+	else if(HasRedLine() == 1){
+		doDrive = true;
+		return GetRedTarget();
+	}
 	else{
-	    setMotors(168.75, -168.75);
-	    return 0;
+		doDrive = false;
+	    return 10;
     }
 }
 
@@ -175,7 +179,9 @@ int main(){
 		SavePPMFile("i0.ppm",cameraView);
 		double adjustmentDegrees = AnalyseImage();
 		AdjustRobot(adjustmentDegrees);
-		DriveRobot();
+		if(doDrive) {
+			DriveRobot();
+		}
 		if(HasFinish() == 1) {
 			running = 0;
 		}
