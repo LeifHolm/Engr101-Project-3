@@ -12,12 +12,14 @@ bool doDrive = true;
 int HasWhiteLine() {
 	int totalWhite = 0;
 
-	for(int row =0 ; row < cameraView.height ; row++){	
-		for(int column = 0; column < cameraView.width ; column++){
+
+
+	for(int row = cameraView.height - 1 ; row > ((3 * cameraView.height) / 4) - 1; row -= 1){
+		for(int column = ((3 * cameraView.width) / 8); column < ((5 * cameraView.width) / 8); column++){
+
 			int red = (int)get_pixel(cameraView, row, column, 0);
 			int green = (int)get_pixel(cameraView, row, column, 1);
 			int blue = (int)get_pixel(cameraView, row, column, 2);
-			
 			//WHITE DETECTION
 			//All rgb values greater than 250 indicate a white pixel
 			if(red > 250 && green > 250 && blue > 250){
@@ -27,7 +29,7 @@ int HasWhiteLine() {
 	}
 	//LINE DETECTION
 	//If at least 3x height of frame in white pixels, indicates there is a white line
-	if(totalWhite >= 3*cameraView.height){
+	if(totalWhite >= cameraView.height / 4){
 		return 1;
 	}
 	else{
@@ -68,7 +70,77 @@ int HasRedLine() {
 * Check if checker black flag exists in given image
 */
 int HasFinish() {
-	return 0;
+	bool blackEdge = false;
+	bool blackMiddle = false;
+	
+	for(int row = 1; row < cameraView.height - 1; row++){	
+		for(int column = 1; column < cameraView.width - 1; column++){
+			int r = (int)get_pixel(cameraView, row, column, 0);
+			int g = (int)get_pixel(cameraView, row, column, 1);
+			int b = (int)get_pixel(cameraView, row, column, 2);
+			//BLACK DETECTION
+			if(r < 10 && g < 10 && b < 10){
+				blackMiddle = true;
+			}
+		}
+	}
+	
+	//Checking left side
+	int column = 0;
+	for(int row = 0; row < cameraView.height; row++){
+		int r = (int)get_pixel(cameraView, row, column, 0);
+		int g = (int)get_pixel(cameraView, row, column, 1);
+		int b = (int)get_pixel(cameraView, row, column, 2);
+		//BLACK DETECTION
+		if(r < 10 && g < 10 && b < 10){
+			blackEdge = true;
+		}
+	}
+	//Checking right side
+	column = cameraView.width - 1;
+	for(int row = 0; row < cameraView.height; row++){
+		int r = (int)get_pixel(cameraView, row, column, 0);
+		int g = (int)get_pixel(cameraView, row, column, 1);
+		int b = (int)get_pixel(cameraView, row, column, 2);
+		//BLACK DETECTION
+		if(r < 10 && g < 10 && b < 10){
+			blackEdge = true;
+		}
+	}
+	//Checking top
+	int row = 0;
+	for(int column = 0; column < cameraView.width; column++){
+		int r = (int)get_pixel(cameraView, row, column, 0);
+		int g = (int)get_pixel(cameraView, row, column, 1);
+		int b = (int)get_pixel(cameraView, row, column, 2);
+		//BLACK DETECTION
+		if(r < 10 && g < 10 && b < 10){
+			blackEdge = true;
+		}
+	}
+	//Checking bottom
+	row = cameraView.height - 1;
+	for(int column = 0; column < cameraView.width; column++){
+		int r = (int)get_pixel(cameraView, row, column, 0);
+		int g = (int)get_pixel(cameraView, row, column, 1);
+		int b = (int)get_pixel(cameraView, row, column, 2);
+		//BLACK DETECTION
+		if(r < 10 && g < 10 && b < 10){
+			blackEdge = true;
+		}
+	}
+	
+	//DETERMINING IF CHECKER FLAG IN CAMERA VIEW
+	//If border is not black, but there is black in middle - indicates checker flag in view
+	if(blackEdge == false && blackMiddle == true){
+		return 1;
+	}
+	else{
+		return 0;
+	}
+
+  
+  
 }
 
 /**
@@ -77,7 +149,9 @@ int HasFinish() {
 double GetWhiteTarget() {
 	int xTarget = cameraView.width / 2;
 	int yTarget = cameraView.height - 1;
-	for(int row = cameraView.height - 1 ; row > (cameraView.height / 4) - 1; row -= 1){
+
+	for(int row = cameraView.height - 1 ; row > ((3 * cameraView.height) / 4) - 1; row -= 1){
+
 		for(int column = ((3 * cameraView.width) / 8); column < ((5 * cameraView.width) / 8); column++){
 			int r = (int)get_pixel(cameraView, row, column, 0);
 			int g = (int)get_pixel(cameraView, row, column, 1);
@@ -107,6 +181,7 @@ double GetWhiteTarget() {
 * The coordinates are offset so that the robot moves alongside the wall, not on it
 */
 double GetRedTarget() {
+
 	for(int row =0 ; row < cameraView.height; row++){
 		for(int column = 0; column < cameraView.width ; column++){
 			int r = (int)get_pixel(cameraView, row, column, 0);
@@ -118,6 +193,7 @@ double GetRedTarget() {
 			if(r > 2 * b && r > 2 * g){
 				int xRobot = cameraView.width / 2;
 				int yRobot = cameraView.height -1;
+
 				int xTarget = column + 40; //20px offset from wall
 				int yTarget = row; //20px offset from wall
 				double distX = xTarget - xRobot;
@@ -160,7 +236,7 @@ void AdjustRobot(double adjustmentdegrees) {
 *Do "step", drive at current motor speeds
 */
 void DriveRobot() {
-  setMotors(40,40);
+  setMotors(20, 20);
 }
 
 /**
@@ -190,4 +266,5 @@ int main(){
 		}
 	}
 	cout<<"Robot has completed the maze!"<<endl;
+	setMotors(0,0);
 }
