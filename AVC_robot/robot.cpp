@@ -67,76 +67,23 @@ int HasRedLine() {
 * Check if checker black flag exists in given image
 */
 int HasFinish() {
-	bool blackEdge = false;
-	bool blackMiddle = false;
-	
-	for(int row = 1; row < cameraView.height - 1; row++){	
-		for(int column = 1; column < cameraView.width - 1; column++){
+	int black = 0;
+	//If more than 100 black pixels in centre half of frame, then indicates black checker flag is present
+	for(int row = cameraView.height / 4; row < (3*cameraView.height)/4; row++){	
+		for(int column = cameraView.width / 4; column < (3*cameraView.width) / 4; column++){
 			int r = (int)get_pixel(cameraView, row, column, 0);
 			int g = (int)get_pixel(cameraView, row, column, 1);
 			int b = (int)get_pixel(cameraView, row, column, 2);
 			//BLACK DETECTION
 			if(r < 10 && g < 10 && b < 10){
-				blackMiddle = true;
+				black++;
+				if(black > 100){
+					return 1;
+				}
 			}
 		}
 	}
-	
-	//Checking left side
-	int column = 0;
-	for(int row = 0; row < cameraView.height; row++){
-		int r = (int)get_pixel(cameraView, row, column, 0);
-		int g = (int)get_pixel(cameraView, row, column, 1);
-		int b = (int)get_pixel(cameraView, row, column, 2);
-		//BLACK DETECTION
-		if(r < 10 && g < 10 && b < 10){
-			blackEdge = true;
-		}
-	}
-	//Checking right side
-	column = cameraView.width - 1;
-	for(int row = 0; row < cameraView.height; row++){
-		int r = (int)get_pixel(cameraView, row, column, 0);
-		int g = (int)get_pixel(cameraView, row, column, 1);
-		int b = (int)get_pixel(cameraView, row, column, 2);
-		//BLACK DETECTION
-		if(r < 10 && g < 10 && b < 10){
-			blackEdge = true;
-		}
-	}
-	//Checking top
-	int row = 0;
-	for(int column = 0; column < cameraView.width; column++){
-		int r = (int)get_pixel(cameraView, row, column, 0);
-		int g = (int)get_pixel(cameraView, row, column, 1);
-		int b = (int)get_pixel(cameraView, row, column, 2);
-		//BLACK DETECTION
-		if(r < 10 && g < 10 && b < 10){
-			blackEdge = true;
-		}
-	}
-	//Checking bottom
-	row = cameraView.height - 1;
-	for(int column = 0; column < cameraView.width; column++){
-		int r = (int)get_pixel(cameraView, row, column, 0);
-		int g = (int)get_pixel(cameraView, row, column, 1);
-		int b = (int)get_pixel(cameraView, row, column, 2);
-		//BLACK DETECTION
-		if(r < 10 && g < 10 && b < 10){
-			blackEdge = true;
-		}
-	}
-	
-	//DETERMINING IF CHECKER FLAG IN CAMERA VIEW
-	//If border is not black, but there is black in middle - indicates checker flag in view
-	if(blackEdge == false && blackMiddle == true){
-		return 1;
-	}
-	else{
-		return 0;
-	}
-	
-	
+	return 0;
 }
 
 /**
@@ -145,7 +92,7 @@ int HasFinish() {
 double GetWhiteTarget() {
 	int xTarget = cameraView.width / 2;
 	int yTarget = cameraView.height - 1;
-	for(int row = cameraView.height - 1 ; row > ((3 * cameraView.height) / 4) - 1; row -= 1){
+	for(int row = cameraView.height - 1; row > (3 * cameraView.height) / 4; row -= 1){
 		for(int column = ((3 * cameraView.width) / 8); column < ((5 * cameraView.width) / 8); column++){
 			int r = (int)get_pixel(cameraView, row, column, 0);
 			int g = (int)get_pixel(cameraView, row, column, 1);
