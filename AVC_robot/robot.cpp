@@ -12,12 +12,14 @@ bool doDrive = true;
 int HasWhiteLine() {
 	int totalWhite = 0;
 
+
+
 	for(int row = cameraView.height - 1 ; row > ((3 * cameraView.height) / 4) - 1; row -= 1){
 		for(int column = ((3 * cameraView.width) / 8); column < ((5 * cameraView.width) / 8); column++){
+
 			int red = (int)get_pixel(cameraView, row, column, 0);
 			int green = (int)get_pixel(cameraView, row, column, 1);
 			int blue = (int)get_pixel(cameraView, row, column, 2);
-			
 			//WHITE DETECTION
 			//All rgb values greater than 250 indicate a white pixel
 			if(red > 250 && green > 250 && blue > 250){
@@ -40,6 +42,7 @@ int HasWhiteLine() {
 */
 int HasRedLine() {
 	int totalRed = 0;
+
 	for(int row =0 ; row < cameraView.height ; row++){	
 		for(int column = 0; column < cameraView.width ; column++){
 			int red = (int)get_pixel(cameraView, row, column, 0);
@@ -122,7 +125,8 @@ double GetWhiteTarget() {
 * The coordinates are offset so that the robot moves alongside the wall, not on it
 */
 double GetRedTarget() {
-	/*for(int row =0 ; row < cameraView.height; row++){
+
+	for(int row =0 ; row < cameraView.height; row++){
 		for(int column = 0; column < cameraView.width ; column++){
 			int r = (int)get_pixel(cameraView, row, column, 0);
 			int g = (int)get_pixel(cameraView, row, column, 1);
@@ -133,17 +137,16 @@ double GetRedTarget() {
 			if(r > 2 * b && r > 2 * g){
 				int xRobot = cameraView.width / 2;
 				int yRobot = cameraView.height -1;
-				int xTarget = column + 20; //20px offset from wall
-				int yTarget = row + 20; //20px offset from wall
+
+				int xTarget = column + 40; //40px offset from wall
+				int yTarget = row;
 				double distX = xTarget - xRobot;
 				double distY = yRobot - yTarget;
 				double theta = atan(distX / distY) * 180 / M_PI;
-				
 				return theta;
 			}
 		}
-	}*/
-	return 0;
+	}
 }
 
 /**
