@@ -194,8 +194,8 @@ double GetRedTarget() {
 				int xRobot = cameraView.width / 2;
 				int yRobot = cameraView.height -1;
 
-				int xTarget = column + 40; //20px offset from wall
-				int yTarget = row; //20px offset from wall
+				int xTarget = column + 40; //40px offset from wall
+				int yTarget = row;
 				double distX = xTarget - xRobot;
 				double distY = yRobot - yTarget;
 				double theta = atan(distX / distY) * 180 / M_PI;
