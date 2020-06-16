@@ -12,14 +12,12 @@ bool doDrive = true;
 int HasWhiteLine() {
 	int totalWhite = 0;
 
-
-
 	for(int row = cameraView.height - 1 ; row > ((3 * cameraView.height) / 4) - 1; row -= 1){
 		for(int column = ((3 * cameraView.width) / 8); column < ((5 * cameraView.width) / 8); column++){
-
 			int red = (int)get_pixel(cameraView, row, column, 0);
 			int green = (int)get_pixel(cameraView, row, column, 1);
 			int blue = (int)get_pixel(cameraView, row, column, 2);
+			
 			//WHITE DETECTION
 			//All rgb values greater than 250 indicate a white pixel
 			if(red > 250 && green > 250 && blue > 250){
@@ -42,7 +40,6 @@ int HasWhiteLine() {
 */
 int HasRedLine() {
 	int totalRed = 0;
-
 	for(int row =0 ; row < cameraView.height ; row++){	
 		for(int column = 0; column < cameraView.width ; column++){
 			int red = (int)get_pixel(cameraView, row, column, 0);
@@ -124,28 +121,84 @@ double GetWhiteTarget() {
 * Returns coordinates on red wall that robot is aiming for
 * The coordinates are offset so that the robot moves alongside the wall, not on it
 */
-double GetRedTarget() {
-
-	for(int row =0 ; row < cameraView.height; row++){
-		for(int column = 0; column < cameraView.width ; column++){
-			int r = (int)get_pixel(cameraView, row, column, 0);
-			int g = (int)get_pixel(cameraView, row, column, 1);
-			int b = (int)get_pixel(cameraView, row, column, 2);
+int GetRedTarget() {
+	bool redTop = false;
+	bool redLeft = false;
+	//TOP DETECTION
+	for(int row = cameraView.height / 2; row < cameraView.height; row++){
+		bool redFound = false;
+		int redRow  = 0;
+		int columnRange = cameraView.width / 2;
+		for(int column = 0; column < columnRange; column++){
+			int red = (int)get_pixel(cameraView, row, column, 0);
+			int green = (int)get_pixel(cameraView, row, column, 1);
+			int blue = (int)get_pixel(cameraView, row, column, 2);
 			
 			//RED DETECTION
 			//Red twice as large as both green and blue indicates a red pixel
-			if(r > 2 * b && r > 2 * g){
-				int xRobot = cameraView.width / 2;
-				int yRobot = cameraView.height -1;
-
-				int xTarget = column + 40; //40px offset from wall
-				int yTarget = row;
-				double distX = xTarget - xRobot;
-				double distY = yRobot - yTarget;
-				double theta = atan(distX / distY) * 180 / M_PI;
-				return theta;
+			if(red > 2 * blue and red > 2 * green){
+				redFound = true;
+				if(redFound == true){
+					redRow += 1;
+				}
+			}
+			else{
+				redFound = false;
+				redRow = 0;
 			}
 		}
+		if(redRow > 30){
+			redTop = true;
+		}
+	}
+	if(redTop == true){
+			cout<<"Top Detected!"<<endl;
+	}
+	else{
+		cout<<"No Top Detected!"<<endl;
+	}
+	
+	//LEFT DETECTION
+	for(int column = 0; column < (cameraView.width / 2); column++){
+		int redCol  = 0;
+		for(int row = cameraView.height / 2; row < cameraView.height; row++){
+			int red = (int)get_pixel(cameraView, row, column, 0);
+			int green = (int)get_pixel(cameraView, row, column, 1);
+			int blue = (int)get_pixel(cameraView, row, column, 2);
+			
+			//RED DETECTION
+			//Red twice as large as both green and blue indicates a red pixel
+			if(red > 2 * blue and red > 2 * green){
+				redCol += 1;
+			}
+		}
+		if(redCol > 30){
+			redLeft = true;
+		}
+	}
+	if(redLeft == true){
+			cout<<"Left Detected!"<<endl;
+	}
+	else{
+		cout<<"No Left Detected!"<<endl;
+	}
+	
+	//SCENARIO DETECTION
+	if(redTop == true && redLeft == true){
+		return 3; //Right Corner
+	}
+	else if(redTop == true){
+		return 2; //Dead end
+	}
+	else if(redTop == false && redLeft == false){
+		setMotors(100, 100);
+		setMotors(-168.75, 168.75);
+		setMotors(50, 50);
+		setMotors(168.75, -168.75);
+		return 1;
+	}
+	else{
+		return 0;
 	}
 }
 
@@ -157,15 +210,28 @@ double GetRedTarget() {
 double AnalyseImage() {
 	if(HasWhiteLine() == 1){
 		doDrive = true;
-		return GetWhiteTarget();
+		return GetWhiteTarget(); //return 0 --> for challenge
 	}
 	else if(HasRedLine() == 1){
-		doDrive = true;
-		return GetRedTarget();
+		if(GetRedTarget() == 3){
+			doDrive = false;
+			return 84.375;
+		}
+		else if(GetRedTarget() == 2){
+			doDrive = false;
+			return -84.375;
+		}
+		else if(GetRedTarget() == 1){
+			return 0;
+		}
+		else{
+			doDrive = true;
+			return 0;
+		}
 	}
 	else{
-		doDrive = false;
-	    return 10;
+		doDrive = false;//doDrive = true; --> for challenge
+	    return 10; //return 0; --> for challenge
     }
 }
 
