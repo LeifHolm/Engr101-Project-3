@@ -1,10 +1,6 @@
-DIR = C:\\SFML
-CFLAGS = -I ${DIR}\include 
-LFLAGS = -L ${DIR}\lib 
-LIBS = -lsfml-window  -lsfml-graphics -lsfml-system -lsfml-network 
-robot: robot.o 
-	g++ $(LFLAGS) -o robot robot.o ${LIBS} 
+INCLUDE = -I F:\AVC\SFML\include
+LIBS = -L F:\AVC\SFML\lib
+robot.exe: robot.o 
+	g++ $(LIBS) -o robot robot.o -lsfml-window  -lsfml-graphics -lsfml-system -lsfml-network 
 robot.o: robot.cpp 
-	g++  -c $(CFLAGS) robot.cpp 
-
-
+	g++  -c $(INCLUDE) robot.cpp 
