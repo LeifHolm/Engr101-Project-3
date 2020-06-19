@@ -28,9 +28,34 @@ Friday 12th June - Core/Completion code to be completed. Aslan will have finishe
 Friday 19th June - Challenge code to be completed and all code and related content will be submitted. The weekly wiki discussion will be completed on the 19th.
 Wednesday 24th June - All individual logs, team logs and the final report.
 
-Installation Instructions for Windows
+Installation Instructions for Windows 10
 
-Install Mingw and Geany
+Head to https://osdn.net/projects/mingw/releases/ and download the mingw-get-setup.exe.
+
+Run the mingw-get-setup.exe and follow the onscreen prompts to install the Installation Manager.
+
+Once installed, run the MingW installation manager.
+
+Navigate to the basic set up and install the following packages: 
+- mingw-developer-toolkit-bin
+- mingw32-base-bin
+- mingw32-gcc-objc-bin
+
+Locate the MinGW folder on your computer. It is most likely located in C:\ or C:\Program Files (x86).
+
+Once located navigate to the start menu and type "environment" and open Edit the System Environment Variables.
+
+Once open click Environment Variables and under System Variables double click on the Variable "Path".
+
+Click new and type in the directory of the bin folder within the MinGW folder.
+
+Press OK to apply the changes.
+
+To test the MingW installation open command prompt and type mingw32-make. You should get the line - mingw32-make: *** No targets specified and no makefile found.  Stop.
+
+Head to https://www.geany.org/download/releases/ and download geany-1.36_setup.exe.
+
+Run the geany-1.36_setup.exe and follow the onscreen instructions to install geany.
 
 Go to https://www.sfml-dev.org/download/sfml/2.5.1/ and download GCC 7.3.0 MinGW (DW2) - 32-bit.
 
@@ -44,7 +69,7 @@ Unzip the folder into the installation folder.
 
 Go into AVC_robot and open the file named makefile in a text editor.
 
-In the top two lines change the current directory to the directory that you installed the SFML file to.
+In the top two lines change the current directory to the directory path that you installed the SFML file to.
 
 Do the same process for the makefile in the AVC_server folder.
 
@@ -54,7 +79,7 @@ Open the build dropdown and click set build commands.
 
 Change the make command to mingw32-make.
 
-Make both the robot.cpp and server.cpp.
+Make both the robot.cpp and server.cpp by clicking on the drop down next to the brick labelled build and click Make All.
 
 Navigate to the AVC_server folder and open server.exe.
 
