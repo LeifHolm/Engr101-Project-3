@@ -73,13 +73,15 @@ In the top two lines change the current directory to the directory path that you
 
 Do the same process for the makefile in the AVC_server folder.
 
+Copy all the .dll files from the SFML\bin folder into the AVC_server folder and when prompted click replace the files in the destination.
+
 Open server.cpp in the AVC_server folder and robot.cpp in the AVC_robot folder with Geany.
 
 Open the build dropdown and click set build commands.
 
 Change the make command to mingw32-make.
 
-Make both the robot.cpp and server.cpp by clicking on the drop down next to the brick labelled build and click Make All.
+Make the robot.cpp and server.cpp by clicking on the drop down next to the brick labelled build and click Make All. Do this for each file.
 
 Navigate to the AVC_server folder and open server.exe.
 
